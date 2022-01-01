@@ -1,5 +1,8 @@
 #ifndef LWINDOW_H
 #define LWINDOW_H
+extern SDL_Renderer* gRenderer;
+extern const int SCREEN_WIDTH;
+extern const int SCREEN_HEIGHT;
 class LWindow
 {
 	public:
@@ -23,8 +26,6 @@ class LWindow
 		int getHeight();
 
 		//Window focii
-		bool hasMouseFocus();
-		bool hasKeyboardFocus();
 		bool isMinimized();
 
 	private:
@@ -36,9 +37,8 @@ class LWindow
 		int mHeight;
 
 		//Window focus
-		bool mMouseFocus;
-		bool mKeyboardFocus;
 		bool mFullScreen;
 		bool mMinimized;
 };
+extern LWindow gWindow;
 #endif
