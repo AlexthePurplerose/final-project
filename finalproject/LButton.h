@@ -11,20 +11,16 @@ enum LButtonSprite
 class LButton
 {
 	public:
-		//Initializes internal variables
 		LButton(int w, int h);
 
-		//Sets top left position
 		void setPosition( int x, int y );
 
-		//Handles mouse event
 		void handleEvent( SDL_Event& e );
 		
 		LButtonSprite mCurrentSprite;
 	
 		bool work;
 	private:
-		//Top left position
 		SDL_Point mPosition;
 		
 		int BUTTON_WIDTH;
