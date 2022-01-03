@@ -11,10 +11,11 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "LTexture.h"
+#include "LWindow.h" 
 
 using namespace std;
 #include "Teacher.h"
@@ -29,19 +30,19 @@ Teacher::Teacher(){
     read_newp = false; 
 }
 
-Teacher::~Teacher()
+/*Teacher::~Teacher()
 {
     //Deallocate
     free();
-}
+}*/ 
 
 //The window renderer
-SDL_Renderer* gRenderer = NULL;
+//SDL_Renderer* gRenderer = NULL;
 
 //LTexture
 LTexture teacherTexture;
 LTexture newspaperTexture;
-LTexture teacherangryTexture
+LTexture teacherangryTexture;
 
 bool Teacher::loadmedia_Teacher()
 {
@@ -49,21 +50,21 @@ bool Teacher::loadmedia_Teacher()
     bool success = true;
 
     //Load teacher texture
-    if( !teacherTexture.loadFromFile( "/老師.png" ) )
+    if( !teacherTexture.loadFromFile( "./teacher.png" ) )
     {
         printf( "Failed to load teacher texture image!\n" );
         success = false;
     }
     
     //Load newspaper texture
-    if( !newspaperTexture.loadFromFile( "/報紙.png" ) )
+    if( !newspaperTexture.loadFromFile( "./newspaper.png" ) )
     {
         printf( "Failed to load newspaper texture image!\n" );
         success = false;
     }
     
     //Load teacher angry texture
-    if( !teacherangryTexture.loadFromFile( "/老師生氣.png" ) )
+    if( !teacherangryTexture.loadFromFile( "./angry.png" ) )
     {
         printf( "Failed to load teacher angry texture image!\n" );
         success = false;
