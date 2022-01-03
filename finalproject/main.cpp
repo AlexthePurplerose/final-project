@@ -8,6 +8,7 @@
 #include "LWindow.h"
 #include "LButton.h"
 #include "Tiempo.h"
+#include "Teacher.h"
 enum scenario{
 	starting=0,
 	ruleintro=1,
@@ -28,6 +29,7 @@ LTexture RuleTexture;
 LTexture BackTexture;
 LTexture Shijian;
 Tiempo countdown;
+Teacher teacher;
 LButton Start(318,92);
 LButton Rule(336,111);
 LButton Back(198,113);
@@ -122,6 +124,11 @@ bool loadMedia()
 		printf( "Failed to render text texture!\n" );
 		success = false;
 	}
+	if(!teacher.loadmedia_Teacher())
+	{
+		printf("Failed to load Teacher!\n");
+		success=false;
+	}
 	test.free();
 	return success;
 }
@@ -167,7 +174,7 @@ void putMedia(scenario s)
 			RuleTexture.free();
 			BackTexture.free();
 			gSceneTexture.loadTexture("./playing.png");
-			Shijian.loadFromRenderedText("時間：",white);
+			Shijian.loadFromRenderedText("??嚗?,white);
 			countdown.loadFromRenderedText(countdown.tout.str(),white);
 			gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
 			Shijian.render(gWindow.getWidth()/2-Shijian.getWidth(),gWindow.getHeight()/20);
