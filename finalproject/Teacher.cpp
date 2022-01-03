@@ -99,10 +99,6 @@ void Teacher::action()
     else
     {
         //Main loop flag
-        bool quit = false;
-
-        //Event handler
-        SDL_Event e;
         
         unsigned int currenttime;
         unsigned int start = 0;
@@ -110,23 +106,10 @@ void Teacher::action()
         bool flag = false;
         int rand_time1 = rand()%(10-3+1)+3;
         int rand_time2 = rand()%(10-3+1)+3;
-        
-        //While application is running
-        while( !quit )
-        {
-            //Handle events on queue
-            while( SDL_PollEvent( &e ) != 0 )
-            {
-                //User requests quit
-                if( e.type == SDL_QUIT )
-                {
-                    quit = true;
-                }
-            }
 
             //Clear screen
             SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-            SDL_RenderClear( gRenderer );
+            //SDL_RenderClear( gRenderer );
 
             //Render teacher texture to screen
             teacherTexture.render( pos_teach_x, pos_teach_y);
@@ -156,9 +139,8 @@ void Teacher::action()
             }
             
             //Update screen
-            SDL_RenderPresent( gRenderer );
+            //SDL_RenderPresent( gRenderer );
         }
-    }
 
     //Free resources and close SDL
     //freemedia_Teacher();
@@ -174,24 +156,6 @@ void Teacher::angry()
     else
     {
         //Main loop flag
-        bool quit = false;
-
-        //Event handler
-        SDL_Event e;
-        
-        //While application is running
-        while( !quit )
-        {
-            //Handle events on queue
-            while( SDL_PollEvent( &e ) != 0 )
-            {
-                //User requests quit
-                if( e.type == SDL_QUIT )
-                {
-                    quit = true;
-                }
-            }
-
             //Clear screen
             SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
             SDL_RenderClear( gRenderer );
@@ -201,7 +165,6 @@ void Teacher::angry()
             
             //Update screen
             SDL_RenderPresent( gRenderer );
-        }
     }
 
 }
