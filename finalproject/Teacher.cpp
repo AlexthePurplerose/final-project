@@ -11,15 +11,19 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #include "LTexture.h"
-#include "LWindow.h" 
+#include "LWindow.h"
 
 using namespace std;
 #include "Teacher.h"
 
+//LTexture
+LTexture teacherTexture;
+LTexture newspaperTexture;
+LTexture teacherangryTexture;
 
 //constructor: initialize variables
 Teacher::Teacher(){
@@ -27,22 +31,18 @@ Teacher::Teacher(){
     pos_teach_y = 0; //teacher's position y
     pos_newp_x = 0; //newspaper's position x
     pos_newp_y = 0; //newspaper's position y
-    read_newp = false; 
+    start = 0;
+    read_newp = false;
 }
 
 /*Teacher::~Teacher()
 {
     //Deallocate
     free();
-}*/ 
+}*/
 
 //The window renderer
 //SDL_Renderer* gRenderer = NULL;
-
-//LTexture
-LTexture teacherTexture;
-LTexture newspaperTexture;
-LTexture teacherangryTexture;
 
 bool Teacher::loadmedia_Teacher()
 {
@@ -50,21 +50,21 @@ bool Teacher::loadmedia_Teacher()
     bool success = true;
 
     //Load teacher texture
-    if( !teacherTexture.loadFromFile( "./teacher.png" ) )
+    if( !teacherTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/teacher.png" ) )
     {
         printf( "Failed to load teacher texture image!\n" );
         success = false;
     }
     
     //Load newspaper texture
-    if( !newspaperTexture.loadFromFile( "./newspaper.png" ) )
+    if( !newspaperTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper.png" ) )
     {
         printf( "Failed to load newspaper texture image!\n" );
         success = false;
     }
     
     //Load teacher angry texture
-    if( !teacherangryTexture.loadFromFile( "./angry.png" ) )
+    if( !teacherangryTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/angry.png" ) )
     {
         printf( "Failed to load teacher angry texture image!\n" );
         success = false;
@@ -81,13 +81,6 @@ void Teacher::freemedia_Teacher()
     teacherangryTexture.free();
 }
 
-/*
-bool Teacher::reading_newspaper()
-{
-    if (read_newp == true) return true;
-    else return false;
-}
- */
 
 void Teacher::action()
 {
@@ -101,46 +94,52 @@ void Teacher::action()
         //Main loop flag
         
         unsigned int currenttime;
-        unsigned int start = 0;
+        //unsigned int start = 0;
         
         bool flag = false;
-        int rand_time1 = rand()%(10-3+1)+3;
-        int rand_time2 = rand()%(10-3+1)+3;
+        static int rand_time1 = rand()%(10-3+1)+3;
+        static int rand_time2 = rand()%(10-3+1)+3;
+        
+        //Clear screen
+        SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        //SDL_RenderClear( gRenderer );
 
-            //Clear screen
-            SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-            //SDL_RenderClear( gRenderer );
-
-            //Render teacher texture to screen
-            teacherTexture.render( pos_teach_x, pos_teach_y);
-            
-            currenttime = SDL_GetTicks();
-            
-            if (currenttime - start < rand_time1*1000)
-            {
-                flag = false; //沒有報紙
-            }
-            else if (currenttime - start > rand_time1*1000 &&
-                     currenttime - start < (rand_time1+rand_time2)*1000)
-            {
-                flag = true; //有報紙
-            }
-            else
-            {
-                start = currenttime;
-                rand_time1 = rand()%(10-3+1)+1;
-                rand_time2 = rand()%(10-3+1)+1;
-            }
-            
-            if (flag == true)
-            {
-                newspaperTexture.render( pos_newp_x, pos_newp_y);
-                read_newp = true;
-            }
-            
-            //Update screen
-            //SDL_RenderPresent( gRenderer );
+        //Render teacher texture to screen
+        pos_teach_x = 0.4501*gWindow.getWidth();
+        pos_teach_y = 0.25427*gWindow.getHeight();
+        teacherTexture.render( pos_teach_x, pos_teach_y);
+        
+        currenttime = SDL_GetTicks();
+        
+        if (currenttime - start < rand_time1*1000)
+        {
+            flag = false; //沒有報紙
         }
+        else if (currenttime - start > rand_time1*1000 &&
+                 currenttime - start < (rand_time1+rand_time2)*1000)
+        {
+            flag = true; //有報紙
+        }
+        else
+        {
+            start = currenttime;
+            rand_time1 = rand()%(10-3+1)+1;
+            rand_time2 = rand()%(10-3+1)+1;
+        }
+        
+        if (flag == true)
+        {
+            pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
+            pos_newp_y = 0.332*gWindow.getHeight(); //newspaper's position y
+            newspaperTexture.render( pos_newp_x, pos_newp_y);
+            read_newp = true;
+        }
+        
+        //Update screen
+        //SDL_RenderPresent( gRenderer );
+
+            
+    }
 
     //Free resources and close SDL
     //freemedia_Teacher();
@@ -156,15 +155,16 @@ void Teacher::angry()
     else
     {
         //Main loop flag
-            //Clear screen
-            SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-            SDL_RenderClear( gRenderer );
+        //Clear screen
+        SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+        SDL_RenderClear( gRenderer );
 
-            //Render teacher angry texture to screen
-            teacherangryTexture.render( pos_teach_x, pos_teach_y);
+        //Render teacher angry texture to screen
+        teacherangryTexture.render( pos_teach_x, pos_teach_y);
+        
+        //Update screen
+        SDL_RenderPresent( gRenderer );
             
-            //Update screen
-            SDL_RenderPresent( gRenderer );
     }
 
 }
