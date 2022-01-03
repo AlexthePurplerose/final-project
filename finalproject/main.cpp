@@ -262,10 +262,6 @@ int main( int argc, char* args[] )
                 {
                     s=playing;
                 }
-                if(s==playing)
-                {
-                    //Sleep(1000);
-                }
             }
         }
     }
