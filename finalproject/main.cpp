@@ -141,6 +141,7 @@ void putMedia(scenario s)
             gSceneTexture.free();
             BackTexture.free();
             Shijian.free();
+            teacher.freemedia_Teacher();
             countdown.free();
             gSceneTexture.loadTexture("./gamestart.png");
             if(!starton) StartTexture.loadFromFile("./gamestartbutton.png");
@@ -161,6 +162,7 @@ void putMedia(scenario s)
             RuleTexture.free();
             Shijian.free();
             countdown.free();
+            teacher.freemedia_Teacher();
             gSceneTexture.loadTexture("./rule.png");
             if(!backon) BackTexture.loadFromFile("./backbutton.png");
             else BackTexture.loadTexture2("./backbutton.png",124,218);
@@ -195,11 +197,16 @@ void putMedia(scenario s)
         case betweenrounds:
             countdown.free();
             gSceneTexture.free();
+            teacher.freemedia_Teacher();
+            gSceneTexture.loadTexture("./black.png");
+            gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             break;
         case finish:
             countdown.free();
             gSceneTexture.free();
-            countdown.reset();
+            teacher.freemedia_Teacher();
+            gSceneTexture.loadTexture("./black.png");
+            gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             break;
     }
 }
@@ -289,6 +296,10 @@ int main( int argc, char* args[] )
                 {
                     s=playing;
                 }
+                if(countdown.end())
+                {
+                	s=finish;
+				}
             }
         }
     }
