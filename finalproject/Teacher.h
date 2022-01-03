@@ -15,7 +15,7 @@ class Teacher
 {
     public:
         Teacher(); //Initializes variables
-        ~Teacher(); //Deallocates memory
+        //~Teacher(); //Deallocates memory
     
         //void shakenewspaper();
         bool loadmedia_Teacher();
