@@ -9,8 +9,11 @@
 using namespace std;
 void Tiempo::go()
 {
+	unsigned int currenttime;
+	static unsigned int start = SDL_GetTicks();
+	currenttime = SDL_GetTicks();
 	int min,sec;
-	second--;
+	second=120-(currenttime-start)/1000;
 	tout.str("");
 	tout.clear();
 	min=second/60;
