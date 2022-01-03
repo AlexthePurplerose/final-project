@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <time.h>
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
@@ -92,17 +93,11 @@ void Teacher::action()
     else
     {
         //Main loop flag
-        pos_teach_x = 0.4501*gWindow.getWidth();
-        pos_teach_y = 0.25427*gWindow.getHeight();
+        pos_teach_x = 0.4501*gWindow.getWidth(); //teacher's position x
+        pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
         pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
         pos_newp_y = 0.332*gWindow.getHeight(); //newspaper's position y
         
-        unsigned int currenttime;
-        //unsigned int start = 0;
-        
-        bool flag = false;
-        static int rand_time1 = rand()%(10-3+1)+3; //不看報紙的秒數
-        static int rand_time2 = rand()%(10-3+1)+3; //看報紙的秒數
         
         //Clear screen
         SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -111,57 +106,48 @@ void Teacher::action()
         //Render teacher texture to screen
         teacherTexture.render( pos_teach_x, pos_teach_y);
         
-        currenttime = SDL_GetTicks();
+        Uint32 current = SDL_GetTicks();
         
-        if (currenttime - start < rand_time1*1000)
+        //Set the seed and generate random number from 3s to 10s
+        srand((unsigned)time(NULL));
+        static int rand_time1 = rand()%(10-3+1)+3; //不看報紙的秒數
+        static int rand_time2 = rand()%(10-3+1)+3; //看報紙的秒數
+        
+        cout << "No: " << rand_time1 << endl;
+        cout << "Yes: " << rand_time2 << endl;
+        
+        if (current - start <= rand_time1*1000)//沒看報紙
         {
-            flag = false; //沒有報紙
+            read_newp = false;
         }
-        else if (currenttime - start > rand_time1*1000 &&
-                 currenttime - start < (rand_time1+rand_time2)*1000)
+        else if (current - start > rand_time1*1000 && //看報紙
+                 current - start < (rand_time1+rand_time2)*1000)
         {
-            flag = true; //有報紙
             read_newp = true;
-            int rand_shake = rand()%(1-0+1)+0; //隨機變數決定要不要抖報紙
+            int rand_shake = rand()%(1-0+1)+0; //決定要不要抖報紙，產生0或1
             
-            if (currenttime - start > (rand_time1+rand_time2)*1000-1000) //看完報紙前一秒一定要抖報紙
+            if (current - start > (rand_time1+rand_time2)*1000-1000) //看完報紙前一秒一定要抖報紙
             {
-                if (currenttime%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
+                //根據目前時間是否為偶數來改變報紙角度
+                if (current%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
                 else newspaperTexture.render(pos_newp_x, pos_newp_y,NULL,-10,NULL,SDL_FLIP_NONE);
             }
             else
             {
                 if (rand_shake == 0) newspaperTexture.render( pos_newp_x, pos_newp_y); //不抖報紙
                 else { //抖報紙
-                    if (currenttime%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
+                    if (current%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
                     else newspaperTexture.render(pos_newp_x, pos_newp_y,NULL,-10,NULL,SDL_FLIP_NONE);
                 }
             }
         }
         else
         {
-            start = currenttime;
-            rand_time1 = rand()%(10-3+1)+1;
-            rand_time2 = rand()%(10-3+1)+1;
+            //超過一輪看跟不看報紙的時間，更新start
+            start = current;
+            rand_time1 = rand()%(10-3+1)+3;
+            rand_time2 = rand()%(10-3+1)+3;
         }
-        
-        /*
-        if (flag == true && currenttime%2 == 0)
-        {
-            pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-            pos_newp_y = 0.332*gWindow.getHeight(); //newspaper's position y
-            newspaperTexture.render( pos_newp_x, pos_newp_y);
-            read_newp = true;
-        }
-        else if (flag == true && currenttime%2 == 1)
-        {
-            pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-            pos_newp_y = 0.332*gWindow.getHeight(); //newspaper's position y
-            newspaperTexture.render(pos_newp_x, pos_newp_y,NULL,-10,NULL,SDL_FLIP_NONE );
-            read_newp = true;
-        }
-         */
-        
         //Update screen
         //SDL_RenderPresent( gRenderer );
 

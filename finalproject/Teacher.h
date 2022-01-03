@@ -27,7 +27,7 @@ class Teacher
     
     private:
         int pos_teach_x, pos_teach_y, pos_newp_x, pos_newp_y;
-        unsigned int start;
+        Uint32 start;
         
 };
 
