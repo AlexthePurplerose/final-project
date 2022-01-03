@@ -24,6 +24,8 @@ using namespace std;
 //LTexture
 LTexture teacherTexture;
 LTexture newspaperTexture;
+LTexture newspaper2Texture;
+LTexture newspaper3Texture;
 LTexture teacherangryTexture;
 
 //constructor: initialize variables
@@ -49,7 +51,7 @@ bool Teacher::loadmedia_Teacher()
 {
     //Loading success flag
     bool success = true;
-
+    
     //Load teacher texture
     if( !teacherTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/teacher.png" ) )
     {
@@ -61,6 +63,20 @@ bool Teacher::loadmedia_Teacher()
     if( !newspaperTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper.png" ) )
     {
         printf( "Failed to load newspaper texture image!\n" );
+        success = false;
+    }
+    
+    //Load newspaper2 texture
+    if( !newspaper2Texture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper2.png" ) )
+    {
+        printf( "Failed to load newspaper2 texture image!\n" );
+        success = false;
+    }
+    
+    //Load newspaper3 texture
+    if( !newspaper3Texture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper3.png" ) )
+    {
+        printf( "Failed to load newspaper3 texture image!\n" );
         success = false;
     }
     
@@ -79,6 +95,8 @@ void Teacher::freemedia_Teacher()
     //Free loaded images
     teacherTexture.free();
     newspaperTexture.free();
+    newspaper2Texture.free();
+    newspaper3Texture.free();
     teacherangryTexture.free();
 }
 
@@ -92,33 +110,33 @@ void Teacher::action()
     }
     else
     {
-        //Main loop flag
-        pos_teach_x = 0.4501*gWindow.getWidth(); //teacher's position x
+        //Set the images; position
+        pos_teach_x = 0.45*gWindow.getWidth(); //teacher's position x
         pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
         pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-        pos_newp_y = 0.332*gWindow.getHeight(); //newspaper's position y
+        pos_newp_y = 0.326*gWindow.getHeight(); //newspaper's position y
         
         
         //Clear screen
         SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-        //SDL_RenderClear( gRenderer );
 
-        //Render teacher texture to screen
+        // Show teacher
         teacherTexture.render( pos_teach_x, pos_teach_y);
+        //newspaper2Texture.render(0.439*gWindow.getWidth() , 0.408*gWindow.getHeight());
+        //newspaper3Texture.render(0.439*gWindow.getWidth() , 0.385*gWindow.getHeight());
+        
         
         Uint32 current = SDL_GetTicks();
         
         //Set the seed and generate random number from 3s to 10s
         srand((unsigned)time(NULL));
-        static int rand_time1 = rand()%(10-3+1)+3; //不看報紙的秒數
-        static int rand_time2 = rand()%(10-3+1)+3; //看報紙的秒數
-        
-        cout << "No: " << rand_time1 << endl;
-        cout << "Yes: " << rand_time2 << endl;
+        static int rand_time1 = rand()%(10-3+1)+3; //不看報紙的總秒數
+        static int rand_time2 = rand()%(10-3+1)+3; //看報紙的總秒數
         
         if (current - start <= rand_time1*1000)//沒看報紙
         {
             read_newp = false;
+            newspaper2Texture.render(0.439*gWindow.getWidth(), 0.408*gWindow.getHeight()); //沒在看報紙的“報紙”
         }
         else if (current - start > rand_time1*1000 && //看報紙
                  current - start < (rand_time1+rand_time2)*1000)
@@ -126,32 +144,32 @@ void Teacher::action()
             read_newp = true;
             int rand_shake = rand()%(1-0+1)+0; //決定要不要抖報紙，產生0或1
             
-            if (current - start > (rand_time1+rand_time2)*1000-1000) //看完報紙前一秒一定要抖報紙
-            {
-                //根據目前時間是否為偶數來改變報紙角度
-                if (current%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
-                else newspaperTexture.render(pos_newp_x, pos_newp_y,NULL,-10,NULL,SDL_FLIP_NONE);
+            if (rand_shake == 0) { //不抖報紙
+                newspaperTexture.render( pos_newp_x, pos_newp_y);
             }
-            else
-            {
-                if (rand_shake == 0) newspaperTexture.render( pos_newp_x, pos_newp_y); //不抖報紙
-                else { //抖報紙
-                    if (current%2 == 0) newspaperTexture.render( pos_newp_x, pos_newp_y);
-                    else newspaperTexture.render(pos_newp_x, pos_newp_y,NULL,-10,NULL,SDL_FLIP_NONE);
+            else { //抖報紙
+                if (current%2 == 0) { //根據現在秒數是否為偶數決定報紙高度
+                    newspaperTexture.render( pos_newp_x, pos_newp_y);
+                }
+                else {
+                    newspaper3Texture.render(0.44*gWindow.getWidth() , 0.355*gWindow.getHeight());
                 }
             }
+            
         }
-        else
+        else //看報紙與不看的過渡期(快看完，還在看)
         {
+            read_newp = true;
+            newspaper3Texture.render(0.44*gWindow.getWidth() , 0.356*gWindow.getHeight());
+            
             //超過一輪看跟不看報紙的時間，更新start
             start = current;
             rand_time1 = rand()%(10-3+1)+3;
             rand_time2 = rand()%(10-3+1)+3;
         }
+         
         //Update screen
         //SDL_RenderPresent( gRenderer );
-
-            
     }
 
     //Free resources and close SDL
