@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string>
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "LTexture.h"
 #include "LWindow.h"
 #include "LButton.h"
@@ -33,6 +33,7 @@ Teacher teacher;
 LButton Start(318,92);
 LButton Rule(336,111);
 LButton Back(198,113);
+bool ruleon, starton, backon;
 bool init()
 {
     bool success = true;
@@ -83,37 +84,37 @@ bool init()
 bool loadMedia()
 {
     bool success = true;
-    if( !test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestart.png" ) )
+    if( !test.loadFromFile( "./gamestart.png" ) )
     {
         printf( "Failed to load window texture!\n" );
         success = false;
     }
-    if( !test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestartbutton.png" ) )
+    if( !test.loadFromFile( "./gamestartbutton.png" ) )
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/rulebutton.png" ) )
+    if(!test.loadFromFile( "./rulebutton.png" ) )
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/rule.png"))
+    if(!test.loadFromFile("./rule.png"))
     {
         printf( "Failed to load rule texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/backbutton.png"))
+    if(!test.loadFromFile("./backbutton.png"))
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/playing.png"))
+    if(!test.loadFromFile("./playing.png"))
     {
         printf( "Failed to load window texture!\n" );
         success = false;
     }
-    gFont = TTF_OpenFont( "/Users/karen/Desktop/計算機程式/final-project/finalproject/eltipodeletrausado.ttf", 60 );
+    gFont = TTF_OpenFont( "./eltipodeletrausado.ttf", 60 );
     if( gFont == NULL )
     {
         printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -141,13 +142,15 @@ void putMedia(scenario s)
             BackTexture.free();
             Shijian.free();
             countdown.free();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestart.png");
-            StartTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestartbutton.png");
-            RuleTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/rulebutton.png");
+            gSceneTexture.loadTexture("./gamestart.png");
+            if(!starton) StartTexture.loadFromFile("./gamestartbutton.png");
+            else StartTexture.loadTexture2("./gamestartbutton.png",101,349);
+            if(!ruleon) RuleTexture.loadFromFile("./rulebutton.png");
+			else RuleTexture.loadTexture2("./rulebutton.png",122,369);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2);
             StartTexture.render(gWindow.getWidth()*2/5, gWindow.getHeight()*3/5,NULL,-10,NULL,SDL_FLIP_NONE );
-            RuleTexture.render( gWindow.getWidth()*7/17, gWindow.getHeight()*21/30,NULL,-10,NULL,SDL_FLIP_NONE );
-            Start.work=1;
+			RuleTexture.render( gWindow.getWidth()*7/17, gWindow.getHeight()*21/30,NULL,-10,NULL,SDL_FLIP_NONE );
+			Start.work=1;
             Rule.work=1;
             Back.work=0;
             Back.mCurrentSprite=BUTTON_SPRITE_MOUSE_OUT;
@@ -158,8 +161,9 @@ void putMedia(scenario s)
             RuleTexture.free();
             Shijian.free();
             countdown.free();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/rule.png");
-            BackTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/backbutton.png");
+            gSceneTexture.loadTexture("./rule.png");
+            if(!backon) BackTexture.loadFromFile("./backbutton.png");
+            else BackTexture.loadTexture2("./backbutton.png",124,218);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             BackTexture.render(gWindow.getWidth()*4/9, gWindow.getHeight()*8/9);
             Start.work=0;
@@ -173,7 +177,7 @@ void putMedia(scenario s)
             StartTexture.free();
             RuleTexture.free();
             BackTexture.free();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/playing.png");
+            gSceneTexture.loadTexture("./playing.png");
             Shijian.loadFromRenderedText("Time: ",white);
             countdown.loadFromRenderedText(countdown.tout.str(),white);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
@@ -215,7 +219,6 @@ void close()
 int main( int argc, char* args[] )
 {
     scenario s=starting;
-    
     if( !init() )
     {
         printf( "Failed to initialize!\n" );
@@ -254,10 +257,34 @@ int main( int argc, char* args[] )
                 {
                     s=ruleintro;
                 }
+                if(Rule.mCurrentSprite==BUTTON_SPRITE_MOUSE_OVER_MOTION)
+                {
+                	ruleon=true;
+				}
+				else
+				{
+					ruleon=false;
+				}
+				if(Start.mCurrentSprite==BUTTON_SPRITE_MOUSE_OVER_MOTION)
+				{
+					starton=true;
+				}
+				else
+				{
+					starton=false;
+				}
+                if(Back.mCurrentSprite==BUTTON_SPRITE_MOUSE_OVER_MOTION)
+                {
+                    backon=true;
+                }
+                else
+                {
+                	backon=false;
+				}
                 if(Back.mCurrentSprite==BUTTON_SPRITE_MOUSE_UP)
                 {
-                    s=starting;
-                }
+                	s=starting;
+				}
                 if(Start.mCurrentSprite==BUTTON_SPRITE_MOUSE_UP)
                 {
                     s=playing;
@@ -268,4 +295,3 @@ int main( int argc, char* args[] )
     close();
     return 0;
 }
-
