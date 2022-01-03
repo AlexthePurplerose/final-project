@@ -25,7 +25,7 @@ class LTexture
 		void setAlpha( Uint8 alpha );
 		
 		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
-
+		bool loadTexture2( std::string path ,int height, int width);
 		int getWidth();
 		int getHeight();
 
