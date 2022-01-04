@@ -21,13 +21,19 @@ const int SCREEN_WIDTH=640;
 const int SCREEN_HEIGHT=480;
 LWindow gWindow;
 TTF_Font *gFont = NULL;
+TTF_Font *bigFont = NULL;
 SDL_Color white={255,255,255};
+SDL_Color yellow={255,255,0};
+SDL_Color purple={221,160,221};
 LTexture test;
 LTexture gSceneTexture;
 LTexture StartTexture;
 LTexture RuleTexture;
 LTexture BackTexture;
 LTexture Shijian;
+LTexture Gameover;
+LTexture p1word;
+LTexture p2word;
 Tiempo countdown;
 Teacher teacher;
 LButton Start(318,92);
@@ -120,7 +126,19 @@ bool loadMedia()
         printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
         success = false;
     }
-    if(!test.loadFromRenderedText("test",white))
+    bigFont = TTF_OpenFont( "./eltipodeletrausado.ttf", 200 );
+    if( bigFont == NULL )
+    {
+        printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
+        success = false;
+    }
+    TTF_SetFontStyle(bigFont, TTF_STYLE_BOLD);
+    if(!test.loadFromRenderedText("test",white,gFont))
+    {
+        printf( "Failed to render text texture!\n" );
+        success = false;
+    }
+    if(!test.loadFromRenderedText("test",white,bigFont))
     {
         printf( "Failed to render text texture!\n" );
         success = false;
@@ -133,6 +151,7 @@ bool loadMedia()
     test.free();
     return success;
 }
+
 void putMedia(scenario s)
 {
     switch(s)
@@ -180,8 +199,8 @@ void putMedia(scenario s)
             RuleTexture.free();
             BackTexture.free();
             gSceneTexture.loadTexture("./playing.png");
-            Shijian.loadFromRenderedText("Time: ",white);
-            countdown.loadFromRenderedText(countdown.tout.str(),white);
+            Shijian.loadFromRenderedText("Time: ",white, gFont);
+            countdown.loadFromRenderedText(countdown.tout.str(),white,gFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             teacher.action(); //teacher
             Shijian.render(gWindow.getWidth()/2-Shijian.getWidth(),gWindow.getHeight()/20);
@@ -206,7 +225,13 @@ void putMedia(scenario s)
             gSceneTexture.free();
             teacher.freemedia_Teacher();
             gSceneTexture.loadTexture("./black.png");
+            Gameover.loadFromRenderedText("Game Over!!!!",purple, bigFont);
+            p1word.loadFromRenderedText("Player 1:",white, gFont);
+            p2word.loadFromRenderedText("Player 2:",white, gFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
+            Gameover.render(gWindow.getWidth()/2-Gameover.getWidth()/2,gWindow.getHeight()/20);
+            p1word.render(gWindow.getWidth()/20,gWindow.getHeight()/3);
+            p2word.render(gWindow.getWidth()*19/20-p2word.getWidth(),gWindow.getHeight()/3);
             break;
     }
 }
@@ -225,7 +250,7 @@ void close()
 }
 int main( int argc, char* args[] )
 {
-    scenario s=starting;
+    scenario s=finish;
     if( !init() )
     {
         printf( "Failed to initialize!\n" );
