@@ -250,7 +250,7 @@ void close()
 }
 int main( int argc, char* args[] )
 {
-    scenario s=finish;
+    scenario s=starting;
     if( !init() )
     {
         printf( "Failed to initialize!\n" );
