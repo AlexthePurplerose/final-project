@@ -13,7 +13,7 @@ class LTexture
 		bool loadFromFile( std::string path );
 		bool loadTexture( std::string path );
 		#if defined(SDL_TTF_MAJOR_VERSION)
-		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
+		bool loadFromRenderedText( std::string textureText, SDL_Color textColor,TTF_Font *gFont );
 		#endif
 
 		void free();
