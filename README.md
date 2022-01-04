@@ -1,1 +1,1 @@
-Alex:This is the place we make our game. Hope we'll have a nice presentation <3.
+Alex:1/4/17:38 I've update main and LTexture cpp and h to render differnet font type.
