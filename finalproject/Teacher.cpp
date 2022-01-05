@@ -115,7 +115,7 @@ void Teacher::action()
         pos_teach_x = 0.45*gWindow.getWidth(); //teacher's position x
         pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
         pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-        pos_newp_y = 0.326*gWindow.getHeight(); //newspaper's position y
+        pos_newp_y = 0.325*gWindow.getHeight(); //newspaper's position y
         
         
         //Clear screen
@@ -148,7 +148,8 @@ void Teacher::action()
             rand_shake = rand()%(3-0+1)+0; //決定要不要抖報紙，產生0~3的隨機變數
             
             if (rand_shake == 1) {
-                newspaper3Texture.render(0.44*gWindow.getWidth() , 0.348*gWindow.getHeight());
+                //newspaper3Texture.render(0.44*gWindow.getWidth() , 0.348*gWindow.getHeight());
+                newspaperTexture.render( pos_newp_x, 0.34*gWindow.getHeight());
             }
             else {
                 newspaperTexture.render( pos_newp_x, pos_newp_y);
@@ -157,7 +158,8 @@ void Teacher::action()
         else //看報紙與不看的過渡期(快看完，還在看)
         {
             read_newp = true;
-            newspaper3Texture.render(0.44*gWindow.getWidth(), 0.35*gWindow.getHeight());
+            //newspaper3Texture.render(0.44*gWindow.getWidth(), 0.35*gWindow.getHeight());
+            newspaperTexture.render( pos_newp_x, 0.345*gWindow.getHeight());
             
             //超過一輪看跟不看報紙的時間，更新start
             start = current;
