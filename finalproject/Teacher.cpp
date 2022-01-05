@@ -37,12 +37,13 @@ Teacher::Teacher(){
     start = 0;
     read_newp = false;
 }
-
-/*Teacher::~Teacher()
+/*
+Teacher::~Teacher()
 {
     //Deallocate
     free();
-}*/
+}
+ */
 
 //The window renderer
 //SDL_Renderer* gRenderer = NULL;
@@ -127,10 +128,11 @@ void Teacher::action()
         
         
         Uint32 current = SDL_GetTicks();
+        int rand_shake;
         
         //Set the seed and generate random number from 3s to 10s
-        srand((unsigned)time(NULL));
-        static int rand_time1 = rand()%(10-3+1)+3; //不看報紙的總秒數
+        srand(current);
+        static int rand_time1 = rand()%(6-3+1)+3; //不看報紙的總秒數
         static int rand_time2 = rand()%(10-3+1)+3; //看報紙的總秒數
         
         if (current - start <= rand_time1*1000)//沒看報紙
@@ -142,29 +144,24 @@ void Teacher::action()
                  current - start < (rand_time1+rand_time2)*1000)
         {
             read_newp = true;
-            int rand_shake = rand()%(1-0+1)+0; //決定要不要抖報紙，產生0或1
+            srand((unsigned)time(NULL));
+            rand_shake = rand()%(3-0+1)+0; //決定要不要抖報紙，產生0~3的隨機變數
             
-            if (rand_shake == 0) { //不抖報紙
+            if (rand_shake == 1) {
+                newspaper3Texture.render(0.44*gWindow.getWidth() , 0.348*gWindow.getHeight());
+            }
+            else {
                 newspaperTexture.render( pos_newp_x, pos_newp_y);
             }
-            else { //抖報紙
-                if (current%2 == 0) { //根據現在秒數是否為偶數決定報紙高度
-                    newspaperTexture.render( pos_newp_x, pos_newp_y);
-                }
-                else {
-                    newspaper3Texture.render(0.44*gWindow.getWidth() , 0.355*gWindow.getHeight());
-                }
-            }
-            
         }
         else //看報紙與不看的過渡期(快看完，還在看)
         {
             read_newp = true;
-            newspaper3Texture.render(0.44*gWindow.getWidth() , 0.356*gWindow.getHeight());
+            newspaper3Texture.render(0.44*gWindow.getWidth(), 0.35*gWindow.getHeight());
             
             //超過一輪看跟不看報紙的時間，更新start
             start = current;
-            rand_time1 = rand()%(10-3+1)+3;
+            rand_time1 = rand()%(6-3+1)+3;
             rand_time2 = rand()%(10-3+1)+3;
         }
          
