@@ -225,7 +225,7 @@ void putMedia(scenario s)
             gSceneTexture.free();
             teacher.freemedia_Teacher();
             gSceneTexture.loadTexture("./black.png");
-            Gameover.loadFromRenderedText("Game Over!!!!",purple, bigFont);
+            Gameover.loadFromRenderedText("Time's Up!!!!",purple, bigFont);
             p1word.loadFromRenderedText("Player 1:",white, gFont);
             p2word.loadFromRenderedText("Player 2:",white, gFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
