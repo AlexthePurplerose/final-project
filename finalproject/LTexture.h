@@ -3,6 +3,16 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+enum KeyPressSurfaces
+{
+    KEY_PRESS_SURFACE_DEFAULT1=0,
+    KEY_PRESS_SURFACE_DEFAULT2=1,
+    KEY_PRESS_SURFACE_A=2,
+    KEY_PRESS_SURFACE_D=3,
+    KEY_PRESS_SURFACE_LEFT=4,
+    KEY_PRESS_SURFACE_RIGHT=5,
+    KEY_PRESS_TOTAL=6
+};
 class LTexture
 {
 	public:
@@ -33,5 +43,5 @@ class LTexture
 	private:
 		SDL_Texture* mTexture;
 };
-extern LTexture gKeyPressSurfaces[6];
+extern LTexture gKeyPressSurfaces[KEY_PRESS_TOTAL];
 #endif
