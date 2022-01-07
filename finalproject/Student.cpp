@@ -11,114 +11,60 @@
 #include "LWindow.h"
 using namespace std ;
 #include "Student.h"
-LTexture studentTexture;
-LTexture noteTexture;
-LTexture raisehandTexture;
-Studnet::Student(){
+player1::player1(){
     pos_stu_x = 0 ; //student's position x
     pos_stu_y = 0 ; //student's position y
-    pos_stu_x = 0 ; //note's position x
+    pos_note_x = 0 ; //note's position x
     pos_note_y = 0 ; //note's position y
     ifcheat = false ;
     ifraise = false ;
 }
-bool Student::loadmedia_Student()
+player2::player2()
 {
-    //Loading success flag
-    bool success = true;
-
-    //Load student texture
-    if( !studentTexture.loadFromFile( "/Users/user/Desktop/Final Picture" ) )
-    {
-        printf( "Failed to load student texture image!\n" );
-        success = false;
-    }
-
-    //Load note texture
-    if( !noteTexture.loadFromFile( "/Users/user/Desktop/Final Picture" ) )
-    {
-        printf( "Failed to load note texture image!\n" );
-        success = false;
-    }
-    //Load student raisehand texture
-    if ( !raisehandTexure.loadFromFile ( "/Users/user/Desktop/Final Picture" ) )
-    {
-        printf( "Failed to load raisehand texture image!\n" );
-        success = false ;
-    }
-
-    return success;
-
+    pos_stu_x = 0 ; //student's position x
+    pos_stu_y = 0 ; //student's position y
+    pos_note_x = 0 ; //note's position x
+    pos_note_y = 0 ; //note's position y
+    ifcheat = false ;
+    ifraise = false ;
 }
-
 //unchecked
 void Student::freemedia_Student()
 {
     //Free loaded images
-    studentTexture.free();
-    noteTexture.free();
+    for ( int i = 0 ; i < 5 ; i++ ) {
+        gKeyPressSurfaces[i].free() ;
+    }
+//    studentTexture.free();
+//    noteTexture.free();
+//    raisehandTexture.free();
     //studentangryTexture.free(); look !!
 }
 
 enum KeyPressSurfaces
 {
     // unchecked
-    KEY_PRESS_SURFACE_DEFAULT,
+    KEY_PRESS_SURFACE_DEFAULT1,
+    KEY_PRESS_SURFACE_DEFAULT2,
     KEY_PRESS_SURFACE_A,
     KEY_PRESS_SURFACE_D,
     KEY_PRESS_SURFACE_LEFT,
-    KEY_PRESS_SURFACE_RIGHT,
-    KEY_PRESS_SURFACE_TOTAL
+    KEY_PRESS_SURFACE_RIGHT
 };
-//SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
-SDL_Surface* loadSurface( string path );
+//SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ]
 
 //The window we'll be rendering to
-SDL_Window* gWindow = NULL;
 
 //The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
 
 //The images that correspond to a keypress
-SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
 
 //The images that correspond to a keypress
-SDL_Surface* gKeyPressSurfaces[ KEY_PRESS_SURFACE_TOTAL ];
 
 //Current displayed image
-SDL_Surface* gCurrentSurface = NULL;
 
-bool init()
-{
-    //Initialization flag
-    bool success = true;
-
-    //Initialize SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-        printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
-        success = false;
-    }
-    else
-    {
-        //Create window
-        gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-        if( gWindow == NULL )
-        {
-            printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
-            success = false;
-        }
-        else
-        {
-            //Get window surface
-            gScreenSurface = SDL_GetWindowSurface( gWindow );
-        }
-    }
-
-    return success;
-}
-
-bool loadMedia_movement ( int student )
+//測試按件
+bool Student :: loadMedia_movement_player1 ()
 {
     //Loading success flag
     bool success = true;
@@ -126,7 +72,7 @@ bool loadMedia_movement ( int student )
     //Load default surface
 
     // unchecked
-    gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] = loadSurface( "/Users/user/Desktop/Final Picture" );
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT1 ] = loadFromFile( "/Users/user/Desktop/Final Picture/Student.png" );
     if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
     {
         printf( "Failed to load default image!\n" );
@@ -135,8 +81,8 @@ bool loadMedia_movement ( int student )
 
     //Load A surface
 
-    gKeyPressSurfaces[ KEY_PRESS_SURFACE_A ] = loadSurface( "/Users/user/Desktop/Final Picture" ) ;
-    if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_A ] == NULL )
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_D ] = loadFromFile( "/Users/user/Desktop/Final Picture/raise_hands.png" ) ;
+    if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_D ] == NULL )
     {
         printf( "Failed to load up image!\n" ) ;
         success = false;
@@ -144,8 +90,8 @@ bool loadMedia_movement ( int student )
 
     //Load D surface
 
-    gKeyPressSurfaces[ KEY_PRESS_SURFACE_D ] = loadSurface( "/Users/user/Desktop/Final Picture" );
-    if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_D ] == NULL )
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_A ] = loadFromFile( "/Users/user/Desktop/Final Picture/note.png" );
+    if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_A ] == NULL )
     {
         printf( "Failed to load down image!\n" );
         success = false;
@@ -153,7 +99,31 @@ bool loadMedia_movement ( int student )
 
     //Load left surface
 
-    gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadSurface( "/Users/user/Desktop/Final Picture" );
+
+    return success;
+}
+
+bool Student :: loadMedia_movement_player2 ()
+{
+    //Loading success flag
+    bool success = true;
+
+    //Load default surface
+
+    // unchecked
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT2 ] = loadFromFile( "/Users/user/Desktop/Final Picture/Student.png" );
+    if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_DEFAULT ] == NULL )
+    {
+        printf( "Failed to load default image!\n" );
+        success = false;
+    }
+
+    //Load A surface
+
+
+    //Load left surface
+
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] = loadFromFile( "/Users/user/Desktop/Final Picture/note.png" );
     if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_LEFT ] == NULL )
     {
         printf( "Failed to load left image!\n" );
@@ -162,7 +132,7 @@ bool loadMedia_movement ( int student )
 
     //Load right surface
 
-    gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadSurface( "/Users/user/Desktop/Final Picture" );
+    gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] = loadFromFile( "/Users/user/Desktop/Final Picture/raise_hands.png" );
     if( gKeyPressSurfaces[ KEY_PRESS_SURFACE_RIGHT ] == NULL )
     {
         printf( "Failed to load right image!\n" );
@@ -172,86 +142,87 @@ bool loadMedia_movement ( int student )
     return success;
 }
 
-void close()
-{
-    //Deallocate surfaces
-    for( int i = 0; i < KEY_PRESS_SURFACE_TOTAL; ++i )
-    {
-        SDL_FreeSurface( gKeyPressSurfaces[ i ] );
-        gKeyPressSurfaces[ i ] = NULL;
-    }
-
-    //Destroy window
-    SDL_DestroyWindow( gWindow );
-    gWindow = NULL;
-
-    //Quit SDL subsystems
-    SDL_Quit();
-}
-void Student :: movement ( int player , event e ) {
-
-    // render student picture to screen
-    studentTexture.render(pos_stu_x, pos_stu_y);
-    // clear the screen
-    if (!loadMedia()) {
-        printf("Failed to load media!\n");
-    } else {
-        //Main loop flag
-        bool quit = false;
-
-        //Event handler
-        SDL_Event e;
+void player1 :: handleEvent ( SDL_Event& e ) {
 
         //Set default current surface
-        // not sure weather if I'm going to need it
-        gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+        // not sure weather if I'm going to need i
 
-        //While application is running
-        while (!quit) {
-            //Handle events on queue
-            while (SDL_PollEvent(&e) != 0) {
-                //User requests quit
-                if (e.type == SDL_QUIT) {
-                    quit = true;
-                }
+        //While application is runni
                     //User presses a key
-                else if (e.type == SDL_KEYDOWN) {
+                if (e.type == SDL_KEYDOWN) {
                     //Select surfaces based on key press
                     switch (e.key.keysym.sym) {
                         case SDLK_a:
-                            freemedia_Student();
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_A];
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_D].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_A].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].loadFromFile( "/Users/user/Desktop/Final Picture/Student.png" );
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_A].loadFromFile("/Users/user/Desktop/Final Picture/note.png" );
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_A].render(pos_note_x,pos_note_y);
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].render(pos_stu_x, pos_stu_y);
+                            ifcheat=1;
+                            ifraise=0;
                             break;
-
-                        case SDLK_DOWN:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_D];
+                        case SDLK_d:
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_A].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_D].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_D].loadFromFile( "/Users/user/Desktop/Final Picture/raise_hands.png" );
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_D].render(pos_stu_x,pos_stu_y);
+                            ifraise=1;
+                            ifcheat=0;
                             break;
-
-                        case SDLK_LEFT:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT];
-                            break;
-
-                        case SDLK_RIGHT:
-                            freemedia_Student();
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT];
-                            break;
-
                         default:
-                            gCurrentSurface = gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT];
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_A].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_D].free();
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].loadFromFile( "/Users/user/Desktop/Final Picture/Student.png" );
+                            gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].render(pos_stu_x, pos_stu_y);
+                            ifraise=0;
+                            ifcheat=0;
                             break;
                     }
                 }
-            }
+}
+void player2 :: handleEvent ( int player , event e ) {
 
-            //Apply the current image
-            SDL_BlitSurface(gCurrentSurface, NULL, gScreenSurface, NULL);
-
-            //Update the surface
-            SDL_UpdateWindowSurface(gWindow);
+    if (e.type == SDL_KEYDOWN) {
+        //Select surfaces based on key press
+        switch (e.key.keysym.sym) {
+            case SDLK_LEFT:
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].loadFromFile(
+                        "/Users/user/Desktop/Final Picture/Student.png");
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT].loadFromFile("/Users/user/Desktop/Final Picture/note.png");
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT].render(pos_note_x, pos_note_y);
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT1].render(pos_stu_x, pos_stu_y);
+                ifcheat = 1;
+                ifraise = 0;
+                break;
+            case SDLK_RIGHT:
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT].loadFromFile(
+                        "/Users/user/Desktop/Final Picture/raise_hands.png");
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT].render(pos_stu_x, pos_stu_y);
+                ifraise = 1;
+                ifcheat = 0;
+                break;
+            default:
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_LEFT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_RIGHT].free();
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].loadFromFile(
+                        "/Users/user/Desktop/Final Picture/Student.png");
+                gKeyPressSurfaces[KEY_PRESS_SURFACE_DEFAULT2].render(pos_stu_x, pos_stu_y);
+                ifraise = 0;
+                ifcheat = 0;
+                break;
         }
-//    SDL_RenderCleaner( gRender ) ;
     }
-    close() ;
 }
 /*void Student::raisehand()
 {
