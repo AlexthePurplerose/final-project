@@ -34,6 +34,7 @@ LTexture Shijian;
 LTexture Gameover;
 LTexture p1word;
 LTexture p2word;
+LTexture gKeyPressSurefaces[6]; //HERE!!!!
 Tiempo countdown;
 Teacher teacher;
 LButton Start(318,92);
