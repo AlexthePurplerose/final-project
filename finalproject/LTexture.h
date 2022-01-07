@@ -1,9 +1,6 @@
-#ifndef LTEXTURE_H
-#define LTEXTURE_H
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-extern TTF_Font *gFont;
 class LTexture
 {
 	public:
@@ -34,4 +31,5 @@ class LTexture
 	private:
 		SDL_Texture* mTexture;
 };
+extern LTexture gKeyPressSurfaces[6];
 #endif
