@@ -8,7 +8,9 @@
 #include "LButton.h"
 #include "Tiempo.h"
 #include "Teacher.h"
-
+#include "Student.h"
+#include "player1.h"
+#include "player2.h"
 enum scenario{
     starting=0,
     ruleintro=1,
@@ -34,7 +36,7 @@ LTexture Shijian;
 LTexture Gameover;
 LTexture p1word;
 LTexture p2word;
-LTexture gKeyPressSurefaces[6]; //HERE!!!!
+LTexture gKeyPressSurfaces[KEY_PRESS_TOTAL];
 Tiempo countdown;
 Teacher teacher;
 LButton Start(318,92);
@@ -227,7 +229,7 @@ void putMedia(scenario s)
             teacher.freemedia_Teacher();
             gSceneTexture.loadTexture("./black.png");
             Gameover.loadFromRenderedText("Time's Up!!!!",purple, bigFont);
-            p1word.loadFromRenderedText("Player 1:",white, gFont);
+            p1word.loadFromRenderedText("Player 1:",yellow, gFont);
             p2word.loadFromRenderedText("Player 2:",white, gFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             Gameover.render(gWindow.getWidth()/2-Gameover.getWidth()/2,gWindow.getHeight()/20);
