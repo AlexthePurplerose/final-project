@@ -10,12 +10,15 @@ class player1 : public Student
     int pos_stu_y ;
     int pos_note_x ;
     int pos_note_y ;
+    int pos_raise_x;
+    int pos_raise_y;
 
     protected:
 
     public:
     player1();
-    void handleEvent( SDL_Event& e ) ;
+    void setpos();
+    void handleEvent() ;
 //    bool ifcheat ;
 //    bool ifraise ;
 };
