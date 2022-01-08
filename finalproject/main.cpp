@@ -39,6 +39,8 @@ LTexture p2word;
 LTexture gKeyPressSurfaces[KEY_PRESS_TOTAL];
 Tiempo countdown;
 Teacher teacher;
+player1 One;
+player2 Two;
 LButton Start(318,92);
 LButton Rule(336,111);
 LButton Back(198,113);
@@ -151,6 +153,16 @@ bool loadMedia()
         printf("Failed to load Teacher!\n");
         success=false;
     }
+    if(!One.loadmedia_movement_player1())
+    {
+    	printf("Failed to load Player 1!\n");
+    	success=false;
+	}
+	if(!Two.loadmedia_movement_player2())
+    {
+    	printf("Failed to load Player 2!\n");
+    	success=false;
+	}
     test.free();
     return success;
 }
@@ -165,6 +177,8 @@ void putMedia(scenario s)
             Shijian.free();
             teacher.freemedia_Teacher();
             countdown.free();
+            One.freemedia_Student();
+            Two.freemedia_Student();
             gSceneTexture.loadTexture("./gamestart.png");
             if(!starton) StartTexture.loadFromFile("./gamestartbutton.png");
             else StartTexture.loadTexture2("./gamestartbutton.png",101,349);
@@ -179,6 +193,8 @@ void putMedia(scenario s)
             Back.mCurrentSprite=BUTTON_SPRITE_MOUSE_OUT;
             break;
         case ruleintro:
+        	One.freemedia_Student();
+        	Two.freemedia_Student();
             gSceneTexture.free();
             StartTexture.free();
             RuleTexture.free();
@@ -209,6 +225,8 @@ void putMedia(scenario s)
             Shijian.render(gWindow.getWidth()/2-Shijian.getWidth(),gWindow.getHeight()/20);
             countdown.render(gWindow.getWidth()/2,gWindow.getHeight()/20);
             countdown.go();
+            One.handleEvent();
+            Two.handleEvent();
             Start.work=0;
             Start.mCurrentSprite=BUTTON_SPRITE_MOUSE_OUT;
             Rule.work=0;
@@ -220,6 +238,8 @@ void putMedia(scenario s)
             countdown.free();
             gSceneTexture.free();
             teacher.freemedia_Teacher();
+            One.freemedia_Student();
+            Two.freemedia_Student();
             gSceneTexture.loadTexture("./black.png");
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             break;
@@ -227,6 +247,8 @@ void putMedia(scenario s)
             countdown.free();
             gSceneTexture.free();
             teacher.freemedia_Teacher();
+            One.freemedia_Student();
+            Two.freemedia_Student();
             gSceneTexture.loadTexture("./black.png");
             Gameover.loadFromRenderedText("Time's Up!!!!",purple, bigFont);
             p1word.loadFromRenderedText("Player 1:",yellow, gFont);
@@ -245,6 +267,9 @@ void close()
     gSceneTexture.free();
     StartTexture.free();
     RuleTexture.free();
+    teacher.freemedia_Teacher();
+    One.freemedia_Student();
+    Two.freemedia_Student();
     SDL_DestroyRenderer( gRenderer );
     gWindow.free();
     IMG_Quit();
@@ -286,6 +311,8 @@ int main( int argc, char* args[] )
                 Start.setPosition(gWindow.getWidth()*2/5, gWindow.getHeight()*3/5);
                 Rule.setPosition(gWindow.getWidth()*7/17, gWindow.getHeight()*21/30);
                 Back.setPosition(gWindow.getWidth()*4/9, gWindow.getHeight()*8/9);
+                One.setpos();
+                Two.setpos();
                 putMedia(s);
                 SDL_RenderPresent( gRenderer );
                 if(Rule.mCurrentSprite==BUTTON_SPRITE_MOUSE_UP)
