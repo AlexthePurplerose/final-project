@@ -13,7 +13,7 @@ void Tiempo::go()
 	static unsigned int start = SDL_GetTicks();
 	currenttime = SDL_GetTicks();
 	int min,sec;
-	second=120-(currenttime-start)/1000;
+	second=120-(currenttime-start)/1000+round*6-6;
 	tout.str("");
 	tout.clear();
 	min=second/60;
