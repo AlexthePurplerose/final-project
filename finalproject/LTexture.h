@@ -13,6 +13,7 @@ enum KeyPressSurfaces
     KEY_PRESS_SURFACE_RIGHT=5,
     KEY_PRESS_TOTAL=6
 };
+extern int round;
 class LTexture
 {
 	public:
