@@ -10,7 +10,7 @@ player1::player1()
     ifcheat = false ;
     ifraise = false ;
 }
-void player1::setpos()
+void player1::setpos()//待定位
 {
 	pos_stu_x = 0.3*gWindow.getWidth(); //student's position x
     pos_stu_y = 0.4*gWindow.getHeight(); //student's position y
