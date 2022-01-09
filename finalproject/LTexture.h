@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <string>
+#include <sstream>
 enum KeyPressSurfaces
 {
     KEY_PRESS_SURFACE_DEFAULT1=0,
@@ -13,7 +15,7 @@ enum KeyPressSurfaces
     KEY_PRESS_SURFACE_RIGHT=5,
     KEY_PRESS_TOTAL=6
 };
-extern int round;
+extern int _round;
 class LTexture
 {
 	public:
