@@ -51,28 +51,28 @@ bool Teacher::loadmedia_Teacher()
     bool success = true;
     
     //Load teacher texture
-    if( !teacherTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/teacher.png" ) )
+    if( !teacherTexture.loadFromFile( "./Picture/teacher.png" ) )
     {
         printf( "Failed to load teacher texture image!\n" );
         success = false;
     }
     
     //Load newspaper texture
-    if( !newspaperTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper.png" ) )
+    if( !newspaperTexture.loadFromFile( "./Picture/newspaper.png" ) )
     {
         printf( "Failed to load newspaper texture image!\n" );
         success = false;
     }
     
     //Load newspaper2 texture
-    if( !newspaper2Texture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/newspaper2.png" ) )
+    if( !newspaper2Texture.loadFromFile( "./Picture/newspaper2.png" ) )
     {
         printf( "Failed to load newspaper2 texture image!\n" );
         success = false;
     }
     
     //Load teacher angry texture
-    if( !teacherangryTexture.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/angry.png" ) )
+    if( !teacherangryTexture.loadFromFile( "./Picture/angry.png" ) )
     {
         printf( "Failed to load teacher angry texture image!\n" );
         success = false;
@@ -104,7 +104,7 @@ void Teacher::action()
             pos_teach_x = 0.45*gWindow.getWidth(); //teacher's position x
             pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
             pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-            pos_newp_y = 0.32*gWindow.getHeight(); //newspaper's position y
+            pos_newp_y = 0.325*gWindow.getHeight(); //newspaper's position y
             
 
             // Show teacher
@@ -175,7 +175,7 @@ void Teacher::angry()
         pos_teach_x = 0.45*gWindow.getWidth(); //teacher's position x
         pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
         
-        teacherangryTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/angry.png");
+        teacherangryTexture.loadFromFile("./Picture/angry.png");
         teacherangryTexture.render( pos_teach_x, pos_teach_y);
         newspaper2Texture.render(0.439*gWindow.getWidth(), 0.408*gWindow.getHeight());
     }
