@@ -30,7 +30,6 @@ LWindow gWindow;
 TTF_Font *gFont = NULL;
 TTF_Font *bigFont = NULL;
 TTF_Font *mediumFont=NULL;
-TTF_Font *smallFont=NULL;
 SDL_Color white={255,255,255};
 SDL_Color yellow={255,255,0};
 SDL_Color purple={221,160,221};
@@ -161,12 +160,6 @@ bool loadMedia()
         success = false;
     }
     TTF_SetFontStyle(mediumFont, TTF_STYLE_BOLD);
-    smallFont=TTF_OpenFont("/Users/karen/Desktop/計算機程式/final-project/finalproject/eltipodeletrausado.ttf", 28);
-    if( smallFont == NULL )
-    {
-        printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
-        success = false;
-    }
     if(!test.loadFromRenderedText("test",white,gFont))
     {
         printf( "Failed to render text texture!\n" );
@@ -264,8 +257,6 @@ void putMedia(scenario s)
             score1.loadFromRenderedText(score1.sout.str(),white, gFont);
             score2.loadFromRenderedText(score2.sout.str(),white, gFont);
             countdown.loadFromRenderedText(countdown.tout.str(),white,gFont);
-            p1word.loadFromRenderedText("Player 1:",black, smallFont);
-            p2word.loadFromRenderedText("Player 2:",black, smallFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             if(!angry) teacher.action(); //teacher
             else teacher.angry();
@@ -276,8 +267,6 @@ void putMedia(scenario s)
             score2.render(gWindow.getWidth()-score2.getWidth(),gWindow.getHeight()/20);
             Round.render(gWindow.getWidth()*3/5-Round.getWidth()/2,gWindow.getHeight()/20);
             countdown.render(gWindow.getWidth()*2/5,gWindow.getHeight()/20);
-            p1word.render(0,0); //待定位
-            p2word.render(0,0); //待定位
             countdown.go();
             One.handleEvent();
             Two.handleEvent();
@@ -370,7 +359,12 @@ void putMedia(scenario s)
 void close()
 {
     TTF_CloseFont( gFont );
+    TTF_CloseFont( bigFont );
+    TTF_CloseFont( mediumFont );
     gFont = NULL;
+    bigFont = NULL;
+	mediumFont = NULL; 
+    gSceneTexture.free();
     gSceneTexture.free();
     StartTexture.free();
     RuleTexture.free();
@@ -478,11 +472,11 @@ int main( int argc, char* args[] )
                 {
                     score1.caught=true;
                     score2.caught=true;
-                    if(Two.ifcheat)
+                    if(Two.ifraise)
                     {
-                        score2.num=is2;
-                    }
-                    score1.num=is1;
+                    	score2.num=score2.num+score1.num-is1;
+                    	score1.num=is1;
+					}
                     roundend=true;
                     roundgettime=true;
                 }
@@ -490,25 +484,11 @@ int main( int argc, char* args[] )
                 {
                     score1.caught=true;
                     score2.caught=true;
-                    score2.num=is2;
-                    roundend=true;
-                    roundgettime=true;
-                }
-                if(!roundgettime&&!teacher.ifread&&One.ifraise&&!Two.ifraise)
-                {
-                    score1.caught=true;
-                    score2.caught=true;
-                    score1.num=score1.num+score2.num-is2;
-                    score2.num=is2;
-                    roundend=true;
-                    roundgettime=true;
-                }
-                else if(!roundgettime&&!teacher.ifread&&!One.ifraise&&Two.ifraise)
-                {
-                    score1.caught=true;
-                    score2.caught=true;
-                    score2.num=score2.num+score1.num-is1;
-                    score1.num=is1;
+                    if(One.ifraise)
+                    {
+                    	score1.num=score1.num+score2.num-is2;
+                    	score2.num=is2;
+					}
                     roundend=true;
                     roundgettime=true;
                 }
