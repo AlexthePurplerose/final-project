@@ -175,11 +175,6 @@ bool loadMedia()
         printf( "Failed to render text texture!\n" );
         success = false;
     }
-    if(!test.loadFromRenderedText("test",white,smallFont))
-    {
-        printf( "Failed to render text texture!\n" );
-        success = false;
-    }
     if(!teacher.loadmedia_Teacher())
     {
         printf("Failed to load Teacher!\n");
