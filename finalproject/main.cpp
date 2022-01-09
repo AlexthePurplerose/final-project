@@ -56,7 +56,7 @@ Score score2;
 LButton Start(318,92);
 LButton Rule(336,111);
 LButton Back(198,113);
-int rd;
+int rd=1;
 ostringstream ROUND;
 bool angry;
 bool ruleon, starton, backon;
