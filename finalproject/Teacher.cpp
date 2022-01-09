@@ -104,7 +104,7 @@ void Teacher::action()
             pos_teach_x = 0.45*gWindow.getWidth(); //teacher's position x
             pos_teach_y = 0.25427*gWindow.getHeight(); // teacher's position y
             pos_newp_x = 0.418*gWindow.getWidth(); //newspaper's position x
-            pos_newp_y = 0.325*gWindow.getHeight(); //newspaper's position y
+            pos_newp_y = 0.32*gWindow.getHeight(); //newspaper's position y
             
 
             // Show teacher
@@ -118,7 +118,7 @@ void Teacher::action()
             
             //Set the seed and generate random number from 3s to 10s
             srand(current);
-            static int rand_time1 = rand()%(6-3+1)+3; //不看報紙的總秒數
+            static int rand_time1 = rand()%(8-3+1)+3; //不看報紙的總秒數
             static int rand_time2 = rand()%(10-3+1)+3; //看報紙的總秒數
             
             if (current - start <= rand_time1*1000)//沒看報紙
@@ -131,20 +131,24 @@ void Teacher::action()
             {
                 ifread = true;
                 srand((unsigned)time(NULL));
-                rand_shake = rand()%(3-0+1)+0; //決定要不要抖報紙，產生0~3的隨機變數
+                rand_shake = rand()%(4-0+1)+0; //決定要不要抖報紙，產生0~3的隨機變數
                 
-                if (rand_shake == 1) {
-                    //newspaper3Texture.render(0.44*gWindow.getWidth() , 0.348*gWindow.getHeight());
-                    newspaperTexture.render( pos_newp_x, 0.34*gWindow.getHeight());
+                if (rand_shake == 1 && current - start < (rand_time1+rand_time2)*1000-320) {
+                    newspaperTexture.render( pos_newp_x, 0.337*gWindow.getHeight());
+                }
+                else if (current - start >= (rand_time1+rand_time2)*1000-320)
+                {
+                    newspaperTexture.render( pos_newp_x, 0.375*gWindow.getHeight());
                 }
                 else {
                     newspaperTexture.render( pos_newp_x, pos_newp_y);
                 }
+                
             }
             else //看報紙與不看的過渡期(快看完，還在看)
             {
                 ifread = true;
-                newspaperTexture.render( pos_newp_x, 0.345*gWindow.getHeight());
+                newspaperTexture.render( pos_newp_x, 0.375*gWindow.getHeight());
                 
                 //超過一輪看跟不看報紙的時間，更新start
                 start = current;
