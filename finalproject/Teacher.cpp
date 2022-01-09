@@ -133,10 +133,10 @@ void Teacher::action()
                 srand((unsigned)time(NULL));
                 rand_shake = rand()%(4-0+1)+0; //決定要不要抖報紙，產生0~3的隨機變數
                 
-                if (rand_shake == 1 && current - start < (rand_time1+rand_time2)*1000-320) {
+                if (rand_shake == 1 && current - start < (rand_time1+rand_time2)*1000-350) {
                     newspaperTexture.render( pos_newp_x, 0.337*gWindow.getHeight());
                 }
-                else if (current - start >= (rand_time1+rand_time2)*1000-320)
+                else if (current - start >= (rand_time1+rand_time2)*1000-350)
                 {
                     newspaperTexture.render( pos_newp_x, 0.375*gWindow.getHeight());
                 }
