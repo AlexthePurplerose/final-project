@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <string>
 #include <sstream>
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "LTexture.h"
 #include "LWindow.h"
 #include "LButton.h"
@@ -13,7 +13,7 @@
 #include "player1.h"
 #include "player2.h"
 #include "Score.h"
-
+#include <SDL_mixer.h>
 using namespace std;
 
 enum scenario{
@@ -30,6 +30,11 @@ LWindow gWindow;
 TTF_Font *gFont = NULL;
 TTF_Font *bigFont = NULL;
 TTF_Font *mediumFont=NULL;
+Mix_Music *Intro=NULL;
+Mix_Music *Playing=NULL;
+Mix_Music *Over=NULL;
+Mix_Chunk *Newspaper=NULL;
+Mix_Chunk *Angry=NULL; 
 SDL_Color white={255,255,255};
 SDL_Color yellow={255,255,0};
 SDL_Color purple={221,160,221};
@@ -60,10 +65,11 @@ int rd=1;
 ostringstream ROUND;
 bool angry;
 bool ruleon, starton, backon;
+int musica=0;
 bool init()
 {
     bool success = true;
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
     {
         printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
         success = false;
@@ -101,6 +107,11 @@ bool init()
                     printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
                     success = false;
                 }
+                if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+				{
+					printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+					success = false;
+				}
             }
         }
     }
@@ -110,50 +121,50 @@ bool init()
 bool loadMedia()
 {
     bool success = true;
-    if( !test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestart.png" ) )
+    if( !test.loadFromFile( "./gamestart.png" ) )
     {
         printf( "Failed to load window texture!\n" );
         success = false;
     }
-    if( !test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestartbutton.png" ) )
+    if( !test.loadFromFile( "./gamestartbutton.png" ) )
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile( "/Users/karen/Desktop/計算機程式/final-project/finalproject/rulebutton.png" ) )
+    if(!test.loadFromFile( "./rulebutton.png" ) )
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/rule.png"))
+    if(!test.loadFromFile("./rule.png"))
     {
         printf( "Failed to load rule texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/backbutton.png"))
+    if(!test.loadFromFile("./backbutton.png"))
     {
         printf( "Failed to load buttons texture!\n" );
         success = false;
     }
-    if(!test.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/playing.png"))
+    if(!test.loadFromFile("./playing.png"))
     {
         printf( "Failed to load window texture!\n" );
         success = false;
     }
-    gFont = TTF_OpenFont( "/Users/karen/Desktop/計算機程式/final-project/finalproject/eltipodeletrausado.ttf", 60 );
+    gFont = TTF_OpenFont( "./eltipodeletrausado.ttf", 60 );
     if( gFont == NULL )
     {
         printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
         success = false;
     }
-    bigFont = TTF_OpenFont( "/Users/karen/Desktop/計算機程式/final-project/finalproject/eltipodeletrausado.ttf", 200 );
+    bigFont = TTF_OpenFont( "./eltipodeletrausado.ttf", 200 );
     if( bigFont == NULL )
     {
         printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
         success = false;
     }
     TTF_SetFontStyle(bigFont, TTF_STYLE_BOLD);
-    mediumFont=TTF_OpenFont("/Users/karen/Desktop/計算機程式/final-project/finalproject/eltipodeletrausado.ttf", 100);
+    mediumFont=TTF_OpenFont("./eltipodeletrausado.ttf", 100);
     if( mediumFont == NULL )
     {
         printf( "Failed to load eltipodeletrausado font! SDL_ttf Error: %s\n", TTF_GetError() );
@@ -190,6 +201,36 @@ bool loadMedia()
         printf("Failed to load Player 2!\n");
         success=false;
     }
+    Intro = Mix_LoadMUS( "./start&intro.mp3" );
+    if(Intro==NULL)
+    {
+    	printf( "Failed to load start music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
+	Playing = Mix_LoadMUS( "./playing.mp3" );
+    if(Playing==NULL)
+    {
+    	printf( "Failed to load playing music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
+	Over = Mix_LoadMUS( "./gameover.mp3" );
+    if(Over==NULL)
+    {
+    	printf( "Failed to load over music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
+	Newspaper = Mix_LoadWAV( "./newspaper.wav" );
+    if(Newspaper==NULL)
+    {
+    	printf( "Failed to load newspaper music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
+	Angry = Mix_LoadWAV( "./angry.wav" );
+    if(Angry==NULL)
+    {
+    	printf( "Failed to load angry music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
     test.free();
     return success;
 }
@@ -206,11 +247,15 @@ void putMedia(scenario s)
             countdown.free();
             One.freemedia_Student();
             Two.freemedia_Student();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestart.png");
-            if(!starton) StartTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestartbutton.png");
-            else StartTexture.loadTexture2("/Users/karen/Desktop/計算機程式/final-project/finalproject/gamestartbutton.png",101,349);
-            if(!ruleon) RuleTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/rulebutton.png");
-            else RuleTexture.loadTexture2("/Users/karen/Desktop/計算機程式/final-project/finalproject/rulebutton.png",122,369);
+            if(Mix_PlayingMusic() == 0)
+            {
+            	Mix_PlayMusic( Intro, -1 );
+			}
+            gSceneTexture.loadTexture("./gamestart.png");
+            if(!starton) StartTexture.loadFromFile("./gamestartbutton.png");
+            else StartTexture.loadTexture2("./gamestartbutton.png",101,349);
+            if(!ruleon) RuleTexture.loadFromFile("./rulebutton.png");
+            else RuleTexture.loadTexture2("./rulebutton.png",122,369);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2);
             StartTexture.render(gWindow.getWidth()*2/5, gWindow.getHeight()*3/5,NULL,-10,NULL,SDL_FLIP_NONE );
             RuleTexture.render( gWindow.getWidth()*7/17, gWindow.getHeight()*21/30,NULL,-10,NULL,SDL_FLIP_NONE );
@@ -230,9 +275,13 @@ void putMedia(scenario s)
             teacher.freemedia_Teacher();
             One.freemedia_Student();
             Two.freemedia_Student();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/rule.png");
-            if(!backon) BackTexture.loadFromFile("/Users/karen/Desktop/計算機程式/final-project/finalproject/backbutton.png");
-            else BackTexture.loadTexture2("/Users/karen/Desktop/計算機程式/final-project/finalproject/backbutton.png",124,218);
+            if(Mix_PlayingMusic() == 0)
+            {
+            	Mix_PlayMusic( Intro, -1 );
+			}
+            gSceneTexture.loadTexture("./rule.png");
+            if(!backon) BackTexture.loadFromFile("./backbutton.png");
+            else BackTexture.loadTexture2("./backbutton.png",124,218);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
             BackTexture.render(gWindow.getWidth()*4/9, gWindow.getHeight()*8/9);
             Start.work=0;
@@ -242,18 +291,31 @@ void putMedia(scenario s)
             Back.work=1;
             break;
         case playing:
+        	if(musica==0)
+        	{
+        		Mix_HaltMusic();
+        		musica=1;
+			}
+			if(Mix_PlayingMusic() == 0)
+			{
+				Mix_PlayMusic( Playing, -1 );
+			}
             gSceneTexture.free();
             StartTexture.free();
             RuleTexture.free();
             BackTexture.free();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/playing.png");
+            gSceneTexture.loadTexture("./playing.png");
             Shijian.loadFromRenderedText("Time: ",white, gFont);
             Round.loadFromRenderedText(ROUND.str(),white,gFont);
             score1.loadFromRenderedText(score1.sout.str(),white, gFont);
             score2.loadFromRenderedText(score2.sout.str(),white, gFont);
             countdown.loadFromRenderedText(countdown.tout.str(),white,gFont);
             gSceneTexture.render( ( gWindow.getWidth() - gSceneTexture.getWidth() ) / 2, ( gWindow.getHeight() - gSceneTexture.getHeight() ) / 2 );
-            if(!angry) teacher.action(); //teacher
+            if(teacher.ifread&&!angry)
+			{
+				if(SDL_GetTicks()%2000<=100)  Mix_PlayChannel( -1, Newspaper, 0 );
+			}
+			if(!angry) teacher.action(); //teacher
             else teacher.angry();
             score1.play(One);
             score2.play(Two);
@@ -273,13 +335,17 @@ void putMedia(scenario s)
             Back.mCurrentSprite=BUTTON_SPRITE_MOUSE_OUT;
             break;
         case betweenrounds:
+        	if(Mix_PlayingMusic() == 0)
+			{
+				Mix_PlayMusic( Playing, -1 );
+			}
             teacher.ifangry = false;
             countdown.free();
             gSceneTexture.free();
             teacher.freemedia_Teacher();
             One.freemedia_Student();
             Two.freemedia_Student();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/black.png");
+            gSceneTexture.loadTexture("./black.png");
             Gameover.loadFromRenderedText("Round Over!!!!",purple, bigFont);
             if(score1.num>score2.num)
             {
@@ -310,12 +376,21 @@ void putMedia(scenario s)
             score2.render(gWindow.getWidth()*19/20-score2.getWidth(),gWindow.getHeight()/2);
             break;
         case finish:
+        	if(musica==1)
+        	{
+        		Mix_HaltMusic();
+        		musica=2;
+			}
+			if(Mix_PlayingMusic() == 0)
+			{
+				Mix_PlayMusic( Over, -1 );
+			}
             countdown.free();
             gSceneTexture.free();
             teacher.freemedia_Teacher();
             One.freemedia_Student();
             Two.freemedia_Student();
-            gSceneTexture.loadTexture("/Users/karen/Desktop/計算機程式/final-project/finalproject/black.png");
+            gSceneTexture.loadTexture("./black.png");
             Gameover.loadFromRenderedText("Time's Up!!!!",purple, bigFont);
             if(score1.num>score2.num)
             {
@@ -359,7 +434,16 @@ void close()
     gFont = NULL;
     bigFont = NULL;
 	mediumFont = NULL; 
-    gSceneTexture.free();
+	Mix_FreeMusic( Intro );
+	Intro = NULL;
+	Mix_FreeMusic( Playing );
+	Playing = NULL;
+	Mix_FreeMusic( Over );
+	Over = NULL;
+	Mix_FreeChunk( Newspaper );
+	Newspaper = NULL;
+	Mix_FreeChunk( Angry );
+	Angry = NULL;
     gSceneTexture.free();
     StartTexture.free();
     RuleTexture.free();
@@ -369,8 +453,9 @@ void close()
     SDL_DestroyRenderer( gRenderer );
     gWindow.free();
     IMG_Quit();
-    SDL_Quit();
     TTF_Quit();
+    Mix_Quit();
+    SDL_Quit();
 }
 int main( int argc, char* args[] )
 {
@@ -472,7 +557,6 @@ int main( int argc, char* args[] )
                     	score2.num=score2.num+score1.num-is1;
                     	score1.num=is1;
 					}
-                    roundend=true;
                     roundgettime=true;
                 }
                 else if(!roundgettime&&!teacher.ifread&&Two.ifcheat)
@@ -484,7 +568,6 @@ int main( int argc, char* args[] )
                     	score1.num=score1.num+score2.num-is2;
                     	score2.num=is2;
 					}
-                    roundend=true;
                     roundgettime=true;
                 }
                 else if(!roundgettime&&!teacher.ifread&&Two.ifraise&&One.ifraise)
@@ -493,13 +576,13 @@ int main( int argc, char* args[] )
                     score2.caught=true;
                     score1.num=(score1.num+is1)/2;
                     score2.num=(score2.num+is2)/2;
-                    roundend=true;
                     roundgettime=true;
                 }
-                if(roundgettime)
+                if(roundgettime&&!roundend)
                 {
+                	roundend=true;
                     roundtick=SDL_GetTicks();
-                    roundgettime=false;
+                    Mix_PlayChannel( -1, Angry, 0 );
                 }
                 if(roundend)
                 {
@@ -516,8 +599,9 @@ int main( int argc, char* args[] )
                     else
                     {
                         rd++;
-                        s=playing;
                         roundend=false;
+                        s=playing;
+                        roundgettime=false;
                         roundbegin=true;
                         score1.caught=false;
                         score2.caught=false;
